@@ -1,0 +1,96 @@
+/* --- TEMAS CROMÁTICOS --- */
+.theme-1 { --pk: #DC0A2D; --bg: #3B4CCA; --ball: #FFDE00; --txt: #fff; }
+.theme-2 { --pk: #4A4A4A; --bg: #D4AF37; --ball: #1A1A1A; --txt: #fff; }
+.theme-3 { --pk: #002366; --bg: #800000; --ball: #00A86B; --txt: #fff; }
+.theme-4 { --pk: #B9F2FF; --bg: #222; --ball: #fff; --txt: #fff; }
+.theme-5 { --pk: #111; --bg: #fff; --ball: #444; --txt: #fff; }
+.theme-all { --pk: #A78BFA; --bg: #F5F5DC; --ball: #301934; --txt: #fff; }
+
+:root {
+    /* PATRÓN v8.9 CORREGIDO: Línea fina, centro circular y denso */
+    --pk-ball-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath fill='currentColor' d='M50 4a46 46 0 0 0-45.9 43h18.2a28 28 0 0 1 55.4 0h18.2A46 46 0 0 0 50 4zm0 92a46 46 0 0 0 45.9-43H77.7a28 28 0 0 1-55.4 0H4.1A46 46 0 0 0 50 96zm0-35a11 11 0 1 0 0-22 11 11 0 0 0 0 22z'/%3E%3C/svg%3E");
+}
+
+body {
+    margin: 0; display: flex; justify-content: center; align-items: center;
+    min-height: 100vh; font-family: 'Press Start 2P', cursive;
+    background-color: var(--bg); position: relative; overflow: hidden;
+    transition: background-color 0.4s;
+}
+
+body::before {
+    content: ""; position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
+    background-image: var(--pk-ball-img); background-size: 70px 70px;
+    background-repeat: repeat; color: var(--ball); opacity: 0.18;
+    transform: rotate(-15deg); z-index: -1; pointer-events: none;
+}
+
+.pokedex-case {
+    background-color: var(--pk); width: 92%; max-width: 420px; padding: 20px;
+    border-radius: 15px 15px 15px 60px; border: 6px solid #222;
+    box-shadow: 10px 10px 0px rgba(0,0,0,0.5); z-index: 10;
+}
+
+/* COMPENSACIÓN DE ALTURA PARA MÓVIL */
+#gritodex-screen {
+    background-color: #98b088; border: 5px inset rgba(0,0,0,0.3);
+    height: 360px; overflow-y: auto; padding: 10px;
+}
+
+/* JUGAR: Controles en fila para no estirar la Pokedex */
+.controls-top { 
+    display: flex; flex-direction: row; gap: 8px; margin-bottom: 10px; 
+}
+.retro-select { flex: 2; background: #222; color: #fff; padding: 8px; border: 3px solid #000; font-family: 'Press Start 2P', cursive; font-size: 9px; }
+#play-btn { flex: 1; background: #333; color: white; border: 3px solid #000; font-family: 'Press Start 2P', cursive; font-size: 9px; cursor: pointer; }
+
+#main-screen {
+    background-color: #98b088; border: 5px inset rgba(0,0,0,0.3);
+    height: 300px; /* Más bajo que el de DEX para compensar la fila de controles */
+    overflow-y: auto; padding: 10px;
+}
+
+/* JUGAR: Lista compacta */
+.options-list { display: flex; flex-direction: column; gap: 6px; }
+.option-btn {
+    display: flex; align-items: center; background: rgba(255,255,255,0.4);
+    border: 2px solid #222; padding: 8px; cursor: pointer;
+    font-family: 'Press Start 2P', cursive; font-size: 8px;
+}
+
+/* DEX: 2 COLUMNAS */
+#gritodex-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.gritodex-item {
+    background: rgba(255,255,255,0.25); border: 2px solid #222;
+    border-radius: 6px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; aspect-ratio: 1/1; padding: 4px;
+}
+.gritodex-item img { width: 80%; image-rendering: pixelated; }
+.gritodex-item span { color: #000; font-size: 6px; text-align: center; margin-top: 3px; line-height: 1.1; }
+
+/* FEEDBACK */
+.correct-choice { background-color: #2ecc71 !important; color: white !important; border: 2px solid #fff !important; }
+.wrong-choice { background-color: #e74c3c !important; color: white !important; border: 2px solid #fff !important; }
+#feedback { text-align: center; color: white; margin-top: 8px; font-size: 10px; }
+#next-btn { background: #fff; border: 2px solid #000; padding: 8px; font-family: 'Press Start 2P', cursive; font-size: 10px; cursor: pointer; margin-top: 5px; }
+
+/* FOOTER Y OTROS */
+.pokedex-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
+.d-pad { 
+    width: 60px; height: 60px; background: #222; 
+    clip-path: polygon(35% 0%, 65% 0%, 65% 35%, 100% 35%, 100% 65%, 65% 65%, 65% 100%, 35% 100%, 35% 65%, 0% 65%, 0% 35%, 35% 35%); 
+}
+.vent-lines { display: flex; flex-direction: column; gap: 5px; }
+.vent-lines span { width: 40px; height: 5px; background: #222; border-radius: 2px; }
+
+.main-title { font-size: 16px; text-align: center; color: var(--txt); margin: 8px 0; }
+.nav-tabs { display: flex; gap: 4px; margin-bottom: 12px; }
+.nav-tabs button { flex: 1; background: #222; color: #fff; border: 2px solid #fff; padding: 8px; font-family: 'Press Start 2P', cursive; font-size: 8px; cursor: pointer; }
+.nav-tabs button.active { background: #555; color: #f1c40f; }
+
+.top-header { display: flex; gap: 12px; margin-bottom: 12px; }
+.blue-eye { width: 45px; height: 45px; background: #5dade2; border: 4px solid #fff; border-radius: 50%; }
+.dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid #222; }
+.red { background: #ff0000; } .yellow { background: #f1c40f; } .green { background: #2ecc71; }
+.pokedex-screen { background-color: #dedede; padding: 10px; border-radius: 8px; border: 4px solid #444; }
+.hidden { display: none; }
