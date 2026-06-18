@@ -1,10 +1,15 @@
+// Rangos completos de IDs de PokeAPI para las generaciones 1 a 9
 const GEN_RANGES = {
     "1": { min: 1, max: 151 },
     "2": { min: 152, max: 251 },
     "3": { min: 252, max: 386 },
     "4": { min: 387, max: 493 },
     "5": { min: 494, max: 649 },
-    "all": { min: 1, max: 649 }
+    "6": { min: 650, max: 721 },
+    "7": { min: 722, max: 809 },
+    "8": { min: 810, max: 905 },
+    "9": { min: 906, max: 1025 },
+    "all": { min: 1, max: 1025 }
 };
 
 const appBody = document.getElementById('app-body');
@@ -62,8 +67,7 @@ navBtns.dex.onclick = () => {
 async function startNewRound() {
     hasGuessed = false;
     feedback.classList.add('hidden');
-    statusLight.classList.add('loading-light');
-    optionsContainer.innerHTML = '<p style="font-size:10px">CARGANDO...</p>';
+    optionsContainer.innerHTML = '<p style="font-size:10px;text-align:center;margin-top:20px;">CARGANDO...</p>';
     applyTheme(genSelect.value);
 
     const { min, max } = GEN_RANGES[genSelect.value];
@@ -90,19 +94,21 @@ async function startNewRound() {
         const sData = await sRes.json();
         currentTarget.spanishName = sData.names.find(n => n.language.name === "es")?.name.toUpperCase();
 
+        // Control para evitar superposición de audios
+        if (cryAudio) cryAudio.pause();
         cryAudio = new Audio(currentTarget.cry);
+        
         renderOptions(pokemons);
-        statusLight.classList.remove('loading-light');
+        cryAudio.play().catch(() => {});
     } catch (e) {
-        optionsContainer.innerHTML = 'ERROR API';
-        statusLight.classList.remove('loading-light');
+        optionsContainer.innerHTML = '<p style="font-size:10px;text-align:center;color:red;">ERROR DE CONEXIÓN</p>';
     }
 }
 
 function renderOptions(pokemons) {
     optionsContainer.innerHTML = pokemons.map(p => `
         <button class="option-btn" data-id="${p.id}" onclick="handleGuess(${p.id}, this)">
-            <img src="${p.sprite}" style="width:40px; height:40px; margin-right:10px; image-rendering:pixelated">
+            <img src="${p.sprite}" alt="${p.name}">
             <span>${p.name}</span>
         </button>
     `).join('');
@@ -130,8 +136,15 @@ function handleGuess(id, btn) {
     feedback.classList.remove('hidden');
 }
 
-playBtn.onclick = () => cryAudio?.play();
+playBtn.onclick = () => {
+    if (cryAudio) {
+        cryAudio.currentTime = 0;
+        cryAudio.play().catch(() => {});
+    }
+};
+
 nextBtn.onclick = startNewRound;
 genSelect.onchange = startNewRound;
 
+// Carga de la ronda inicial
 startNewRound();
