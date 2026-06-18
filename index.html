@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grito-Dex Pro | v10.0 Complete</title>
+    <title>Grito-Dex Pro | v10.1 Definitive</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body id="app-body" class="theme-1">
     <div class="pokedex-case">
+        <!-- HEADER -->
         <div class="top-header">
             <div class="blue-eye" id="status-light"></div>
             <div class="light-dots">
@@ -20,13 +21,16 @@
 
         <h1 class="main-title">GRITO-DEX</h1>
         
+        <!-- PESTAÑAS -->
         <div class="nav-tabs">
             <button id="btn-game" class="active">JUGAR</button>
             <button id="btn-view-gritodex">DEX</button>
         </div>
 
+        <!-- PANTALLA PRINCIPAL -->
         <div class="pokedex-screen">
             
+            <!-- VISTA JUGAR -->
             <div id="game-view">
                 <div class="controls-top">
                     <select id="gen-select" class="retro-select">
@@ -44,8 +48,8 @@
                     <button id="play-btn">OÍR</button>
                 </div>
 
-                <div id="main-screen">
-                    <div id="options-container" class="options-list"></div>
+                <div id="main-screen" class="options-list">
+                    <!-- Aquí se inyectan las opciones o el estado de carga -->
                 </div>
 
                 <div id="feedback" class="hidden">
@@ -54,6 +58,7 @@
                 </div>
             </div>
 
+            <!-- VISTA DEX -->
             <div id="gritodex-view" class="hidden">
                 <h3 class="dex-counter">VISTOS: <span id="count">0</span></h3>
                 <div id="gritodex-list"></div>
@@ -61,6 +66,7 @@
 
         </div>
 
+        <!-- FOOTER DE LA CONSOLA -->
         <div class="pokedex-footer">
             <div class="vent-lines">
                 <span></span><span></span><span></span>
@@ -69,6 +75,7 @@
         </div>
     </div>
 
+    <!-- AUDIO RETRO -->
     <audio id="snd-success" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
     <audio id="snd-error" src="https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3"></audio>
 
