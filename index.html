@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grito-Dex Pro | v9.0 Mobile Fit</title>
+    <title>Grito-Dex Pro | v10.0 Complete</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -25,38 +25,40 @@
             <button id="btn-view-gritodex">DEX</button>
         </div>
 
-        <div id="game-view">
-            <div class="controls-top">
-                <select id="gen-select" class="retro-select">
-                    <option value="1">GEN 1</option>
-                    <option value="2">GEN 2</option>
-                    <option value="3">GEN 3</option>
-                    <option value="4">GEN 4</option>
-                    <option value="5">GEN 5</option>
-                    <option value="all">TODAS</option>
-                </select>
-                <button id="play-btn">OÍR</button>
-            </div>
+        <div class="pokedex-screen">
+            
+            <div id="game-view">
+                <div class="controls-top">
+                    <select id="gen-select" class="retro-select">
+                        <option value="1">GEN 1</option>
+                        <option value="2">GEN 2</option>
+                        <option value="3">GEN 3</option>
+                        <option value="4">GEN 4</option>
+                        <option value="5">GEN 5</option>
+                        <option value="6">GEN 6</option>
+                        <option value="7">GEN 7</option>
+                        <option value="8">GEN 8</option>
+                        <option value="9">GEN 9</option>
+                        <option value="all">TODAS</option>
+                    </select>
+                    <button id="play-btn">OÍR</button>
+                </div>
 
-            <div class="pokedex-screen">
                 <div id="main-screen">
                     <div id="options-container" class="options-list"></div>
                 </div>
-            </div>
 
-            <div id="feedback" class="hidden">
-                <p id="message"></p>
-                <button id="next-btn">SIGUIENTE</button>
-            </div>
-        </div>
-
-        <div id="gritodex-view" class="hidden">
-            <div class="pokedex-screen">
-                <div id="gritodex-screen">
-                    <h3 class="dex-counter">VISTOS: <span id="count">0</span></h3>
-                    <div id="gritodex-list"></div>
+                <div id="feedback" class="hidden">
+                    <p id="message"></p>
+                    <button id="next-btn">SIGUIENTE</button>
                 </div>
             </div>
+
+            <div id="gritodex-view" class="hidden">
+                <h3 class="dex-counter">VISTOS: <span id="count">0</span></h3>
+                <div id="gritodex-list"></div>
+            </div>
+
         </div>
 
         <div class="pokedex-footer">
