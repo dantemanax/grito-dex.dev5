@@ -1,4 +1,4 @@
-// Rangos completos de IDs de PokeAPI para las generaciones 1 a 9
+// Mapeo estricto y completo de las 9 generaciones para la PokeAPI
 const GEN_RANGES = {
     "1": { min: 1, max: 151 },
     "2": { min: 152, max: 251 },
@@ -14,12 +14,11 @@ const GEN_RANGES = {
 
 const appBody = document.getElementById('app-body');
 const genSelect = document.getElementById('gen-select');
-const optionsContainer = document.getElementById('options-container');
+const optionsContainer = document.getElementById('main-screen');
 const playBtn = document.getElementById('play-btn');
 const feedback = document.getElementById('feedback');
 const message = document.getElementById('message');
 const nextBtn = document.getElementById('next-btn');
-const statusLight = document.getElementById('status-light');
 const gritodexList = document.getElementById('gritodex-list');
 const countLabel = document.getElementById('count');
 const navBtns = { game: document.getElementById('btn-game'), dex: document.getElementById('btn-view-gritodex') };
@@ -64,44 +63,92 @@ navBtns.dex.onclick = () => {
     renderGritodex();
 };
 
+// ==========================================================================
+// FUNCIÓN PRINCIPAL BLINDADA CONTRA ERRORES DE ASINCRONISMO (GEN 6-9)
+// ==========================================================================
 async function startNewRound() {
     hasGuessed = false;
     feedback.classList.add('hidden');
-    optionsContainer.innerHTML = '<p style="font-size:10px;text-align:center;margin-top:20px;">CARGANDO...</p>';
-    applyTheme(genSelect.value);
-
-    const { min, max } = GEN_RANGES[genSelect.value];
-    const ids = [];
-    while(ids.length < 5) {
-        const id = Math.floor(Math.random() * (max - min + 1)) + min;
-        if(!ids.includes(id)) ids.push(id);
-    }
+    
+    // Forzamos el texto de carga de forma limpia antes de procesar nada
+    optionsContainer.innerHTML = '<p class="loading-text">CARGANDO...</p>';
 
     try {
+        const currentGen = genSelect.value;
+        applyTheme(currentGen);
+
+        // Control de seguridad: Verificar si la generación existe en los rangos
+        if (!GEN_RANGES[currentGen]) {
+            throw new Error("Generación no soportada");
+        }
+
+        const { min, max } = GEN_RANGES[currentGen];
+        const ids = [];
+        while(ids.length < 5) {
+            const id = Math.floor(Math.random() * (max - min + 1)) + min;
+            if(!ids.includes(id)) ids.push(id);
+        }
+
+        // Consultas en paralelo controlando propiedades ausentes
         const pokemons = await Promise.all(ids.map(async id => {
             const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+            if(!res.ok) throw new Error("Error de respuesta de API");
             const data = await res.json();
+            
+            // Salvaguarda indispensable: Extraer gritos de la estructura moderna de PokeAPI de forma segura
+            const safeCry = data.cries ? (data.cries.latest || data.cries.legacy) : null;
+            
             return {
                 id: data.id,
                 name: data.name.toUpperCase(),
-                cry: data.cries.latest || data.cries.legacy,
-                sprite: data.sprites.front_default
+                cry: safeCry,
+                // Fallback por si la API no devuelve sprite frontal en alguna variante alta
+                sprite: data.sprites?.front_default || 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png'
             };
         }));
 
         currentTarget = pokemons[Math.floor(Math.random() * 5)];
-        const sRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${currentTarget.id}`);
-        const sData = await sRes.json();
-        currentTarget.spanishName = sData.names.find(n => n.language.name === "es")?.name.toUpperCase();
 
-        // Control para evitar superposición de audios
-        if (cryAudio) cryAudio.pause();
-        cryAudio = new Audio(currentTarget.cry);
+        // Carga segura del nombre en español desde la especie
+        try {
+            const sRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${currentTarget.id}`);
+            if (sRes.ok) {
+                const sData = await sRes.json();
+                const matchName = sData.names?.find(n => n.language.name === "es")?.name;
+                currentTarget.spanishName = matchName ? matchName.toUpperCase() : currentTarget.name;
+            } else {
+                currentTarget.spanishName = currentTarget.name;
+            }
+        } catch(speciesError) {
+            // Si falla la traducción, usamos el nombre base para no congelar la app
+            currentTarget.spanishName = currentTarget.name;
+        }
+
+        // Control estricto de audio para evitar que se pisen
+        if (cryAudio) {
+            cryAudio.pause();
+            cryAudio.src = "";
+        }
         
+        if (currentTarget.cry) {
+            cryAudio = new Audio(currentTarget.cry);
+            cryAudio.play().catch(() => console.log("Interacción de audio requerida"));
+        } else {
+            console.warn("Este Pokémon no cuenta con un archivo de grito en PokeAPI.");
+        }
+
         renderOptions(pokemons);
-        cryAudio.play().catch(() => {});
-    } catch (e) {
-        optionsContainer.innerHTML = '<p style="font-size:10px;text-align:center;color:red;">ERROR DE CONEXIÓN</p>';
+
+    } catch (error) {
+        console.error("Error crítico atrapado:", error);
+        optionsContainer.innerHTML = `
+            <p class="loading-text" style="color:#ff4d4d;">
+                ERROR AL CARGAR<br>GEN ${genSelect.value}<br>
+                <span style="font-size:7px; color:#fff; display:block; margin-top:8px;">REINTENTANDO EN 3 SEG...</span>
+            </p>
+        `;
+        // Auto-reintento automático tras fallo de red para no dejar colgada la pantalla
+        setTimeout(startNewRound, 3000);
     }
 }
 
@@ -146,5 +193,5 @@ playBtn.onclick = () => {
 nextBtn.onclick = startNewRound;
 genSelect.onchange = startNewRound;
 
-// Carga de la ronda inicial
+// Inicializar la primera carga de datos
 startNewRound();
