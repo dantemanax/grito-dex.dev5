@@ -1,5 +1,5 @@
 /* ==========================================================================
-   1. VARIABLES Y TEMAS DINÁMICOS (CON GEN 6 Y 7 CORREGIDOS)
+   1. VARIABLES Y TEMAS DINÁMICOS (PALETAS COMPLETAS 1 A 9)
    ========================================================================== */
 :root {
     --pk: #E74C3C;
@@ -10,16 +10,16 @@
 .theme-1 { --pk: #D32F2F; --bg: #1A252F; --txt: #FFFFFF; } /* Kanto */
 .theme-2 { --pk: #16A085; --bg: #2E4053; --txt: #FFFFFF; } /* Johto */
 .theme-3 { --pk: #2980B9; --bg: #212F3D; --txt: #FFFFFF; } /* Hoenn */
-.theme-4 { --pk: #8E44AD; --bg: #222222; --txt: #FFFFFF; } /* Sinnoh (Fondo #222) */
+.theme-4 { --pk: #8E44AD; --bg: #222222; --txt: #FFFFFF; } /* Sinnoh */
 .theme-5 { --pk: #7F8C8D; --bg: #1C2833; --txt: #FFFFFF; } /* Unova */
-.theme-6 { --pk: #7A1F2D; --bg: #4A6572; --txt: #FFFFFF; } /* Kalos (Bordó y Azul Opaco) */
+.theme-6 { --pk: #7A1F2D; --bg: #4A6572; --txt: #FFFFFF; } /* Kalos */
 .theme-7 { --pk: #D35400; --bg: #2E4053; --txt: #FFFFFF; } /* Alola */
 .theme-8 { --pk: #117A65; --bg: #1F2A38; --txt: #FFFFFF; } /* Galar */
 .theme-9 { --pk: #9B59B6; --bg: #2C3E50; --txt: #FFFFFF; } /* Paldea */
 .theme-all { --pk: #34495E; --bg: #1C2833; --txt: #FFFFFF; }
 
 /* ==========================================================================
-   2. ESTRUCTURA BASE (MOBILE FIT DE ALTURA CONTROLADA)
+   2. PATRÓN DE FONDO GENERAL (COMO EN LA IMAGEN ENVIADA)
    ========================================================================== */
 * {
     box-sizing: border-box;
@@ -35,7 +35,10 @@ body {
     align-items: center;
     width: 100vw;
     height: 100dvh;
-    background-color: #1c1c1f;
+    /* Fondo con el patrón denso de Pokébolas simétricas idéntico a tu imagen */
+    background-color: #f0f0f2;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='%23d1d1d6' stroke-width='1.2' opacity='0.7'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='2' y1='12' x2='22' y2='12'/%3E%3Ccircle cx='12' cy='12' r='2.5' fill='%23d1d1d6'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 42px 42px;
     padding: 10px;
     overflow: hidden;
 }
@@ -48,7 +51,7 @@ body {
     background-color: var(--pk);
     border: 4px solid #000;
     border-radius: 16px;
-    box-shadow: inset -10px -10px 0px rgba(0,0,0,0.2), 0px 8px 24px rgba(0,0,0,0.5);
+    box-shadow: inset -10px -10px 0px rgba(0,0,0,0.18), 0px 12px 32px rgba(0,0,0,0.4);
     display: flex;
     flex-direction: column;
     padding: 16px;
@@ -57,14 +60,14 @@ body {
 }
 
 /* ==========================================================================
-   3. DETALLES DE LA CARCASA Y PESTAÑAS
+   3. DETALLES DE LA CARCASA
    ========================================================================== */
 .top-header {
     display: flex;
     align-items: center;
     gap: 12px;
     margin-bottom: 12px;
-    border-bottom: 3px solid rgba(0,0,0,0.15);
+    border-bottom: 3px solid rgba(0,0,0,0.12);
     padding-bottom: 10px;
 }
 
@@ -74,7 +77,7 @@ body {
     background: radial-gradient(circle at 30% 30%, #68d8d6, #07b1ca);
     border: 4px solid #fff;
     border-radius: 50%;
-    box-shadow: 0 0 0 3px #000, 0 4px 6px rgba(0,0,0,0.3);
+    box-shadow: 0 0 0 3px #000, 0 4px 6px rgba(0,0,0,0.2);
 }
 
 .light-dots { display: flex; gap: 6px; }
@@ -98,10 +101,10 @@ body {
     border: 3px solid #000; border-bottom: none;
     border-radius: 6px 6px 0 0; cursor: pointer;
 }
-.nav-tabs button.active { background-color: #fff; color: #000; }
+.nav-tabs button.active { background-color: #fff; color: #000; font-weight: bold; }
 
 /* ==========================================================================
-   4. PANTALLA CON PATRÓN SIMÉTRICO FIJO v9.2
+   4. PANTALLA (COLOR RETRO SÓLIDO DINÁMICO)
    ========================================================================== */
 .pokedex-screen {
     flex: 1;
@@ -116,27 +119,16 @@ body {
     transition: background-color 0.4s ease;
 }
 
-.pokedex-screen::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1' opacity='0.12'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='2' y1='12' x2='22' y2='12'/%3E%3Ccircle cx='12' cy='12' r='2.5' fill='%23ffffff'/%3E%3C/g%3E%3C/svg%3E");
-    background-size: 24px 24px;
-    pointer-events: none;
-    z-index: 1;
-}
-
 #game-view, #gritodex-view {
     display: flex;
     flex-direction: column;
     flex: 1;
     overflow: hidden;
     position: relative;
-    z-index: 2;
 }
 
 /* ==========================================================================
-   5. INTERFAZ JUGAR (FILA ÚNICA COMPACTA)
+   5. CONTROLES Y LISTAS
    ========================================================================== */
 .controls-top {
     display: flex;
@@ -166,6 +158,16 @@ body {
     flex: 1;
 }
 
+/* Texto de Carga estilo Consola Retro */
+.loading-text {
+    font-size: 10px;
+    color: var(--txt);
+    text-align: center;
+    margin-top: 30px;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 0px #000;
+}
+
 .option-btn {
     display: flex;
     align-items: center;
@@ -190,10 +192,10 @@ body {
     display: flex; justify-content: space-between; align-items: center;
 }
 #message { font-size: 9px; color: #000; font-weight: bold; }
-#next-btn { padding: 6px 12px; font-size: 8px; background-color: #3498db; color: #fff; border: 2px solid #000; border-radius: 4px; cursor: pointer; }
+#next-btn { padding: 6px 12px; font-size: 8px; background-color: #3498db; color: #fff; border: 2px solid #000; border-radius: 4px; }
 
 /* ==========================================================================
-   6. INTERFAZ DEX (CUADRÍCULA DE 2 COLUMNAS + ALTURA CONTROLADA)
+   6. VISTA DEX (2 COLUMNAS)
    ========================================================================== */
 .dex-counter {
     font-size: 9px;
@@ -225,7 +227,7 @@ body {
 .gritodex-item span { font-size: 7px; color: #000; margin-top: 4px; line-height: 1.2; }
 
 /* ==========================================================================
-   7. FOOTER CON CRUCETA A LA DERECHA
+   7. FOOTER Y CRUCETA
    ========================================================================== */
 .pokedex-footer {
     margin-top: auto;
@@ -257,7 +259,6 @@ body {
     background-color: #1a1a1a;
 }
 
-/* SCROLLBAR RETRO INTEGRADO */
 .options-list::-webkit-scrollbar, #gritodex-list::-webkit-scrollbar { width: 6px; }
 .options-list::-webkit-scrollbar-thumb, #gritodex-list::-webkit-scrollbar-thumb { background: #000000; border-radius: 3px; }
 
