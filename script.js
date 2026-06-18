@@ -1,4 +1,3 @@
-// Mapeo estricto y completo de las 9 generaciones para la PokeAPI
 const GEN_RANGES = {
     "1": { min: 1, max: 151 },
     "2": { min: 152, max: 251 },
@@ -53,34 +52,30 @@ function renderGritodex() {
 }
 
 navBtns.game.onclick = () => {
-    views.game.classList.remove('hidden'); views.dex.classList.add('hidden');
-    navBtns.game.classList.add('active'); navBtns.dex.classList.remove('active');
+    views.game.classList.remove('hidden');
+    views.dex.classList.add('hidden');
+    navBtns.game.classList.add('active');
+    navBtns.dex.classList.remove('active');
 };
 
 navBtns.dex.onclick = () => {
-    views.game.classList.add('hidden'); views.dex.classList.remove('hidden');
-    navBtns.dex.classList.add('active'); navBtns.game.classList.remove('active');
+    views.game.classList.add('hidden');
+    views.dex.classList.remove('hidden');
+    navBtns.dex.classList.add('active');
+    navBtns.game.classList.remove('active');
     renderGritodex();
 };
 
-// ==========================================================================
-// FUNCIÓN PRINCIPAL BLINDADA CONTRA ERRORES DE ASINCRONISMO (GEN 6-9)
-// ==========================================================================
 async function startNewRound() {
     hasGuessed = false;
     feedback.classList.add('hidden');
-    
-    // Forzamos el texto de carga de forma limpia antes de procesar nada
     optionsContainer.innerHTML = '<p class="loading-text">CARGANDO...</p>';
 
     try {
         const currentGen = genSelect.value;
         applyTheme(currentGen);
 
-        // Control de seguridad: Verificar si la generación existe en los rangos
-        if (!GEN_RANGES[currentGen]) {
-            throw new Error("Generación no soportada");
-        }
+        if (!GEN_RANGES[currentGen]) throw new Error("Gen no soportada");
 
         const { min, max } = GEN_RANGES[currentGen];
         const ids = [];
@@ -89,27 +84,22 @@ async function startNewRound() {
             if(!ids.includes(id)) ids.push(id);
         }
 
-        // Consultas en paralelo controlando propiedades ausentes
         const pokemons = await Promise.all(ids.map(async id => {
             const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
-            if(!res.ok) throw new Error("Error de respuesta de API");
+            if(!res.ok) throw new Error("Error API");
             const data = await res.json();
-            
-            // Salvaguarda indispensable: Extraer gritos de la estructura moderna de PokeAPI de forma segura
             const safeCry = data.cries ? (data.cries.latest || data.cries.legacy) : null;
             
             return {
                 id: data.id,
                 name: data.name.toUpperCase(),
                 cry: safeCry,
-                // Fallback por si la API no devuelve sprite frontal en alguna variante alta
                 sprite: data.sprites?.front_default || 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png'
             };
         }));
 
         currentTarget = pokemons[Math.floor(Math.random() * 5)];
 
-        // Carga segura del nombre en español desde la especie
         try {
             const sRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${currentTarget.id}`);
             if (sRes.ok) {
@@ -119,12 +109,10 @@ async function startNewRound() {
             } else {
                 currentTarget.spanishName = currentTarget.name;
             }
-        } catch(speciesError) {
-            // Si falla la traducción, usamos el nombre base para no congelar la app
+        } catch(e) {
             currentTarget.spanishName = currentTarget.name;
         }
 
-        // Control estricto de audio para evitar que se pisen
         if (cryAudio) {
             cryAudio.pause();
             cryAudio.src = "";
@@ -132,23 +120,14 @@ async function startNewRound() {
         
         if (currentTarget.cry) {
             cryAudio = new Audio(currentTarget.cry);
-            cryAudio.play().catch(() => console.log("Interacción de audio requerida"));
-        } else {
-            console.warn("Este Pokémon no cuenta con un archivo de grito en PokeAPI.");
+            cryAudio.play().catch(() => {});
         }
 
         renderOptions(pokemons);
 
     } catch (error) {
-        console.error("Error crítico atrapado:", error);
-        optionsContainer.innerHTML = `
-            <p class="loading-text" style="color:#ff4d4d;">
-                ERROR AL CARGAR<br>GEN ${genSelect.value}<br>
-                <span style="font-size:7px; color:#fff; display:block; margin-top:8px;">REINTENTANDO EN 3 SEG...</span>
-            </p>
-        `;
-        // Auto-reintento automático tras fallo de red para no dejar colgada la pantalla
-        setTimeout(startNewRound, 3000);
+        optionsContainer.innerHTML = '<p class="loading-text" style="color:#ff4d4d;">FALLÓ CONEXIÓN</p>';
+        setTimeout(startNewRound, 2500);
     }
 }
 
@@ -193,5 +172,4 @@ playBtn.onclick = () => {
 nextBtn.onclick = startNewRound;
 genSelect.onchange = startNewRound;
 
-// Inicializar la primera carga de datos
 startNewRound();
